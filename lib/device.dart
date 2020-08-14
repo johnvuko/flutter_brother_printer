@@ -11,6 +11,20 @@ enum BrotherDeviceSource {
   ble,
 }
 
+extension on BrotherDeviceSource {
+  String toJsonString() {
+    switch (this) {
+      case BrotherDeviceSource.network:
+        return 'network';
+      case BrotherDeviceSource.bluetooth:
+        return 'bluetooth';
+      case BrotherDeviceSource.ble:
+        return 'ble';
+    }
+    return null;
+  }
+}
+
 class BrotherDevice extends Equatable {
   final String ipAddress;
   final String location;
@@ -66,7 +80,7 @@ class BrotherDevice extends Equatable {
 
   Map<String, String> toJson() {
     return {
-      'source': source.toString(),
+      'source': source.toJsonString(),
       'ipAddress': ipAddress,
       'location': location,
       'modelName': modelName,
