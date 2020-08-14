@@ -36,7 +36,11 @@ class BrotherPrinter {
     return devices.map((x) => Map<String, String>.from(x)).map((x) => BrotherDevice.fromJson(x)).where((x) => x.model != null).toList();
   }
 
-  static Future<void> printPDF(String path, BrotherDevice device) async {
+  static Future<void> printPDF(String path, BrotherDevice device, [int copies = 1]) async {
+    assert(path != null);
+    assert(device != null);
+    assert(copies > 0);
+
     int modelCode;
 
     if (Platform.isIOS) {
@@ -47,6 +51,7 @@ class BrotherPrinter {
 
     await _channel.invokeMethod('printPDF', {
       'path': path,
+      'copies': copies,
       'modelCode': modelCode,
       'ipAddress': device.ipAddress,
       'macAddress': device.macAddress,

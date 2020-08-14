@@ -112,13 +112,14 @@ public class BrotherPrinterPlugin implements FlutterPlugin, MethodCallHandler, A
 
   public void printPDF(@NonNull MethodCall call, @NonNull final Result result) {
     String path = call.argument("path");
+    int copies = call.argument("copies");
     int modelCode = call.argument("modelCode");
     String ipAddress = call.argument("ipAddress");
     String macAddress = call.argument("macAddress");
     String bleAdvertiseLocalName = call.argument("bleAdvertiseLocalName");
 
     PrinterSession session = new PrinterSession();
-    session.print(context, modelCode, path, ipAddress, macAddress, bleAdvertiseLocalName, new BRPrinterSessionCompletion(){
+    session.print(context, modelCode, path, copies, ipAddress, macAddress, bleAdvertiseLocalName, new BRPrinterSessionCompletion(){
       public void completion(final Exception exception) {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
           @Override

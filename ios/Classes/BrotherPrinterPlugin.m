@@ -40,6 +40,7 @@
 
 - (void)printPDF:(FlutterMethodCall*)call result:(FlutterResult)result {
     NSString *path = [[call arguments] objectForKey:@"path"];
+    NSNumber *copies = [[call arguments] objectForKey:@"copies"];
     NSNumber *model = [[call arguments] objectForKey:@"modelCode"];
     NSString *ipAddress = [[call arguments] objectForKey:@"ipAddress"];
     NSString *serialNumber = [[call arguments] objectForKey:@"serialNumber"];
@@ -49,13 +50,13 @@
     NSError *error;
     
     if (ipAddress != nil) {
-        [session printPDF:path model:[model integerValue] ipAddress:ipAddress error:&error];
+        [session printPDF:path copies:[copies unsignedIntegerValue] model:[model integerValue] ipAddress:ipAddress error:&error];
     }
     else if (serialNumber != nil) {
-        [session printPDF:path model:[model integerValue] serialNumber:serialNumber error:&error];
+        [session printPDF:path copies:[copies unsignedIntegerValue] model:[model integerValue] serialNumber:serialNumber error:&error];
     }
     else if (bleAdvertiseLocalName != nil) {
-        [session printPDF:path model:[model integerValue] bleAdvertiseLocalName:bleAdvertiseLocalName error:&error];
+        [session printPDF:path copies:[copies unsignedIntegerValue] model:[model integerValue] bleAdvertiseLocalName:bleAdvertiseLocalName error:&error];
     }
     else {
         result([self handleError:[NSError errorWithDomain:BRErrorDomain code:BRPrintErrorCodeMissingParameterError userInfo:nil]]);

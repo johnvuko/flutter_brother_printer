@@ -1,3 +1,7 @@
+## 0.0.3
+
+* Add option `copies`
+
 ## 0.0.2
 
 * Fix serialization of BrotherDevice

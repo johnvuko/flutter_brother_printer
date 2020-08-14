@@ -29,7 +29,7 @@ class PrinterErrorException extends Exception {
 
 public class PrinterSession {
 
-    void print(Context context, int modelCode, final String path, String ipAddress, String macAddress, String bleAdvertiseLocalName, final BRPrinterSessionCompletion completion) {
+    void print(Context context, int modelCode, final String path, int copies, String ipAddress, String macAddress, String bleAdvertiseLocalName, final BRPrinterSessionCompletion completion) {
         PrinterInfo.Model model = PrinterInfo.Model.valueFromID(modelCode);
 
         final Printer printer = new Printer();
@@ -38,6 +38,7 @@ public class PrinterSession {
         settings.workPath = context.getFilesDir().getAbsolutePath();
         settings.isAutoCut = true;
         settings.printMode = PrinterInfo.PrintMode.FIT_TO_PAGE;
+        settings.numberOfCopies = copies;
 
         if (ipAddress != null) {
             settings.port = PrinterInfo.Port.NET;

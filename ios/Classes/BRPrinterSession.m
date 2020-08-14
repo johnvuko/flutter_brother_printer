@@ -7,22 +7,22 @@
 
 @implementation BRPrinterSession
 
-- (void)printPDF:(nonnull NSString*) path model:(NSInteger)model ipAddress:(nonnull NSString*) ipAddress error:(NSError **)error {
+- (void)printPDF:(nonnull NSString*) path copies:(NSUInteger)copies model:(NSInteger)model ipAddress:(nonnull NSString*) ipAddress error:(NSError **)error {
     BRLMChannel *channel = [[BRLMChannel alloc] initWithWifiIPAddress:ipAddress];
-    [self connect:channel path:path model:model error:error];
+    [self connect:channel path:path copies:copies model:model error:error];
 }
 
-- (void)printPDF:(nonnull NSString*) path model:(NSInteger)model serialNumber:(nonnull NSString*) serialNumber error:(NSError **)error {
+- (void)printPDF:(nonnull NSString*) path copies:(NSUInteger)copies model:(NSInteger)model serialNumber:(nonnull NSString*) serialNumber error:(NSError **)error {
     BRLMChannel *channel = [[BRLMChannel alloc] initWithBluetoothSerialNumber:serialNumber];
-    [self connect:channel path:path model:model error:error];
+    [self connect:channel path:path copies:copies model:model error:error];
 }
 
-- (void)printPDF:(nonnull NSString*) path model:(NSInteger)model bleAdvertiseLocalName:(nonnull NSString*) bleAdvertiseLocalName error:(NSError **)error {
+- (void)printPDF:(nonnull NSString*) path copies:(NSUInteger)copies model:(NSInteger)model bleAdvertiseLocalName:(nonnull NSString*) bleAdvertiseLocalName error:(NSError **)error {
     BRLMChannel *channel = [[BRLMChannel alloc] initWithBLELocalName:bleAdvertiseLocalName];
-    [self connect:channel path:path model:model error:error];
+    [self connect:channel path:path copies:copies model:model error:error];
 }
 
-- (void)connect:(nonnull BRLMChannel*) channel path:(nonnull NSString*) path  model:(BRLMPrinterModel)model error:(NSError **)error {
+- (void)connect:(nonnull BRLMChannel*) channel path:(nonnull NSString*) path  copies:(NSUInteger)copies model:(BRLMPrinterModel)model error:(NSError **)error {
     BRLMPrinterDriverGenerateResult *generateResult = [BRLMPrinterDriverGenerator openChannel:channel];
 
     switch (generateResult.error.code) {
@@ -42,14 +42,16 @@
     }
 
     BRLMPrinterDriver *printerDriver = generateResult.driver;
-    [self process:printerDriver path:path model:model error:error];
+    [self process:printerDriver path:path copies:copies model:model error:error];
     [printerDriver closeChannel];
 }
 
-- (void)process:(nonnull BRLMPrinterDriver *) printerDriver path:(nonnull NSString*) path model:(BRLMPrinterModel)model error:(NSError **)error {
+- (void)process:(nonnull BRLMPrinterDriver *) printerDriver path:(nonnull NSString*) path copies:(NSUInteger)copies model:(BRLMPrinterModel)model error:(NSError **)error {
     NSURL *url = [NSURL URLWithString:path];
 
-    id settings = [self settings:model];
+    NSObject <NSCoding, BRLMPrintSettingsProtocol, BRLMPrintImageSettings> * settings = [self settings:model];
+    [settings setNumCopies:copies];
+
     BRLMPrintError *printError = [printerDriver printPDFWithURL:url settings:settings];
     
     switch (printError.code) {
@@ -149,7 +151,7 @@
 }
 
 // TODO be able to pass settings from Flutter
--(id)settings:(BRLMPrinterModel) model
+-(NSObject <NSCoding, BRLMPrintSettingsProtocol, BRLMPrintImageSettings> *)settings:(BRLMPrinterModel) model
 {
   switch (model)
     {
