@@ -33,6 +33,12 @@ In the `Info.plist` add:
 ```
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>Bluetooth is required for connection to printers.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Bluetooth is required for connection to printers.</string>
+    <key>UISupportedExternalAccessoryProtocols</key>
+    <array>
+        <string>com.brother.ptcbp</string>
+    </array>
 ```
 
 ### Android
@@ -72,3 +78,8 @@ There are difference between what return the iOS version and the Android version
     Network: modelName, ipAddress, network macAddress, serialNumber
     Bluetooth: printerName, bluetooth macAddress
 ```
+
+## Author
+
+- [Jonathan VUKOVICH-TRIBOUHARET](https://github.com/jonathantribouharet)
+
