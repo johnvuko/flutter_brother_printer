@@ -1,6 +1,6 @@
 name: brother_printer
 description: BRLMPrinterKit Brother's printer SDK
-version: 0.0.3
+version: 0.0.4
 homepage: https://github.com/jonathantribouharet/flutter_brother_printer
 
 environment:
