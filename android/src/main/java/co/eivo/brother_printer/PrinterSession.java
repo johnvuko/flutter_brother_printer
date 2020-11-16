@@ -29,7 +29,7 @@ class PrinterErrorException extends Exception {
 
 public class PrinterSession {
 
-    void print(Context context, int modelCode, final String path, int copies, String ipAddress, String macAddress, String bleAdvertiseLocalName, final BRPrinterSessionCompletion completion) {
+    void print(Context context, int modelCode, final String path, int copies, String ipAddress, String macAddress, String bleAdvertiseLocalName, String paperSettingsPath, final BRPrinterSessionCompletion completion) {
         PrinterInfo.Model model = PrinterInfo.Model.valueFromID(modelCode);
 
         final Printer printer = new Printer();
@@ -52,32 +52,39 @@ public class PrinterSession {
             settings.setLocalName(bleAdvertiseLocalName);
         }
 
-        if (model == PrinterInfo.Model.TD_2120N) {
-            settings.paperSize = PrinterInfo.PaperSize.CUSTOM;
-
-            CustomPaperInfo customPaperInfo = CustomPaperInfo.newCustomDiaCutPaper(
-                    settings.printerModel,
-                    Unit.Mm,
-                    51.0f,
-                    26.0f,
-                    0,
-                    0,
-                    0,
-                    0,
-                    29.0f
-            );
-
-            List<Map<CustomPaperInfo.ErrorParameter, CustomPaperInfo.ErrorDetail>> errors = settings.setCustomPaperInfo(customPaperInfo);
-            if (errors.isEmpty() == false) {
-                for(final Map<CustomPaperInfo.ErrorParameter, CustomPaperInfo.ErrorDetail> error: errors) {
-                    for (final Map.Entry<CustomPaperInfo.ErrorParameter, CustomPaperInfo.ErrorDetail> entry: error.entrySet()) {
-                        Log.d("BrotherPrinterPlugin", entry.getKey().toString() + " " + entry.getValue().message);
-                    }
-                }
-
+        if (model == PrinterInfo.Model.TD_2120N || model == PrinterInfo.Model.TD_2130N) {
+            if (paperSettingsPath == null) {
+                Log.d("BrotherPrinterPlugin", "no paperSettingsPath");
                 completion.completion(new PrinterErrorException(PrinterInfo.ErrorCode.ERROR_WRONG_LABEL));
                 return;
             }
+
+            settings.paperSize = PrinterInfo.PaperSize.CUSTOM;
+            settings.customPaper = paperSettingsPath;
+
+            // CustomPaperInfo customPaperInfo = CustomPaperInfo.newCustomDiaCutPaper(
+            //         settings.printerModel,
+            //         Unit.Mm,
+            //         51.0f,
+            //         26.0f,
+            //         0,
+            //         0,
+            //         0,
+            //         0,
+            //         29.0f
+            // );
+
+            // List<Map<CustomPaperInfo.ErrorParameter, CustomPaperInfo.ErrorDetail>> errors = settings.setCustomPaperInfo(customPaperInfo);
+            // if (errors.isEmpty() == false) {
+            //     for(final Map<CustomPaperInfo.ErrorParameter, CustomPaperInfo.ErrorDetail> error: errors) {
+            //         for (final Map.Entry<CustomPaperInfo.ErrorParameter, CustomPaperInfo.ErrorDetail> entry: error.entrySet()) {
+            //             Log.d("BrotherPrinterPlugin", entry.getKey().toString() + " " + entry.getValue().message);
+            //         }
+            //     }
+
+            //     completion.completion(new PrinterErrorException(PrinterInfo.ErrorCode.ERROR_WRONG_LABEL));
+            //     return;
+            // }
         }
         else if (model == PrinterInfo.Model.QL_820NWB) {
             settings.labelNameIndex = LabelInfo.QL700.W62RB.ordinal();

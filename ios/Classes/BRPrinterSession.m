@@ -7,22 +7,22 @@
 
 @implementation BRPrinterSession
 
-- (void)printPDF:(nonnull NSString*) path copies:(NSUInteger)copies model:(NSInteger)model ipAddress:(nonnull NSString*) ipAddress error:(NSError **)error {
+- (void)printPDF:(nonnull NSString*) path copies:(NSUInteger) copies model:(NSInteger) model paperSettingsPath:(NSString *) paperSettingsPath ipAddress:(nonnull NSString*) ipAddress error:(NSError **)error {
     BRLMChannel *channel = [[BRLMChannel alloc] initWithWifiIPAddress:ipAddress];
-    [self connect:channel path:path copies:copies model:model error:error];
+    [self connect:channel path:path copies:copies model:model paperSettingsPath:paperSettingsPath error:error];
 }
 
-- (void)printPDF:(nonnull NSString*) path copies:(NSUInteger)copies model:(NSInteger)model serialNumber:(nonnull NSString*) serialNumber error:(NSError **)error {
+- (void)printPDF:(nonnull NSString*) path copies:(NSUInteger) copies model:(NSInteger) model paperSettingsPath:(NSString *) paperSettingsPath serialNumber:(nonnull NSString*) serialNumber error:(NSError **)error {
     BRLMChannel *channel = [[BRLMChannel alloc] initWithBluetoothSerialNumber:serialNumber];
-    [self connect:channel path:path copies:copies model:model error:error];
+    [self connect:channel path:path copies:copies model:model paperSettingsPath:paperSettingsPath error:error];
 }
 
-- (void)printPDF:(nonnull NSString*) path copies:(NSUInteger)copies model:(NSInteger)model bleAdvertiseLocalName:(nonnull NSString*) bleAdvertiseLocalName error:(NSError **)error {
+- (void)printPDF:(nonnull NSString*) path copies:(NSUInteger) copies model:(NSInteger) model paperSettingsPath:(NSString *) paperSettingsPath bleAdvertiseLocalName:(nonnull NSString*) bleAdvertiseLocalName error:(NSError **)error {
     BRLMChannel *channel = [[BRLMChannel alloc] initWithBLELocalName:bleAdvertiseLocalName];
-    [self connect:channel path:path copies:copies model:model error:error];
+    [self connect:channel path:path copies:copies model:model paperSettingsPath:paperSettingsPath error:error];
 }
 
-- (void)connect:(nonnull BRLMChannel*) channel path:(nonnull NSString*) path  copies:(NSUInteger)copies model:(BRLMPrinterModel)model error:(NSError **)error {
+- (void)connect:(nonnull BRLMChannel*) channel path:(nonnull NSString*) path  copies:(NSUInteger)copies model:(BRLMPrinterModel)model paperSettingsPath:(NSString *) paperSettingsPath error:(NSError **)error {
     BRLMPrinterDriverGenerateResult *generateResult = [BRLMPrinterDriverGenerator openChannel:channel];
 
     switch (generateResult.error.code) {
@@ -42,14 +42,14 @@
     }
 
     BRLMPrinterDriver *printerDriver = generateResult.driver;
-    [self process:printerDriver path:path copies:copies model:model error:error];
+    [self process:printerDriver path:path copies:copies model:model paperSettingsPath:paperSettingsPath error:error];
     [printerDriver closeChannel];
 }
 
-- (void)process:(nonnull BRLMPrinterDriver *) printerDriver path:(nonnull NSString*) path copies:(NSUInteger)copies model:(BRLMPrinterModel)model error:(NSError **)error {
+- (void)process:(nonnull BRLMPrinterDriver *) printerDriver path:(nonnull NSString*) path copies:(NSUInteger)copies model:(BRLMPrinterModel)model paperSettingsPath:(NSString *) paperSettingsPath error:(NSError **)error {
     NSURL *url = [NSURL URLWithString:path];
 
-    NSObject <NSCoding, BRLMPrintSettingsProtocol, BRLMPrintImageSettings> * settings = [self settings:model];
+    NSObject <NSCoding, BRLMPrintSettingsProtocol, BRLMPrintImageSettings> * settings = [self settings:model paperSettingsPath:paperSettingsPath];
     [settings setNumCopies:copies];
 
     BRLMPrintError *printError = [printerDriver printPDFWithURL:url settings:settings];
@@ -151,7 +151,7 @@
 }
 
 // TODO be able to pass settings from Flutter
--(NSObject <NSCoding, BRLMPrintSettingsProtocol, BRLMPrintImageSettings> *)settings:(BRLMPrinterModel) model
+-(NSObject <NSCoding, BRLMPrintSettingsProtocol, BRLMPrintImageSettings> *)settings:(BRLMPrinterModel) model paperSettingsPath:(NSString *) paperSettingsPath
 {
   switch (model)
     {
@@ -195,14 +195,16 @@
     case BRLMPrinterModelTD_4520DN:
     case BRLMPrinterModelTD_4550DNWB:
       {
-      BRLMTDPrintSettings *settings = [[BRLMTDPrintSettings alloc] initDefaultPrintSettingsWithPrinterModel:model];
-          BRLMCustomPaperSize *paperSize = [[BRLMCustomPaperSize alloc] initDieCutWithTapeWidth:51
-                                                                                     tapeLength:26
-                                                                                        margins:BRLMCustomPaperSizeMarginsMake(0, 0, 0, 0)
-                                                                                      gapLength:3
-                                                                                   unitOfLength:BRLMCustomPaperSizeLengthUnitMm];
-          [settings setCustomPaperSize:paperSize];
+          BRLMTDPrintSettings *settings = [[BRLMTDPrintSettings alloc] initDefaultPrintSettingsWithPrinterModel:model];
+          NSURL *customPaperFileUrl = [NSURL URLWithString:paperSettingsPath];
+          BRLMCustomPaperSize *paperSize = [[BRLMCustomPaperSize alloc] initWithFile:customPaperFileUrl];
+          // BRLMCustomPaperSize *paperSize = [[BRLMCustomPaperSize alloc] initDieCutWithTapeWidth:51
+          //                                                                            tapeLength:26
+          //                                                                               margins:BRLMCustomPaperSizeMarginsMake(3, 3, 3, 3)
+          //                                                                             gapLength:3
+          //                                                                          unitOfLength:BRLMCustomPaperSizeLengthUnitMm];
           [settings setPeelLabel:TRUE];
+          [settings setCustomPaperSize:paperSize];
     return settings;
       }
       break;

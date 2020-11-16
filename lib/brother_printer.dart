@@ -36,7 +36,7 @@ class BrotherPrinter {
     return devices.map((x) => Map<String, String>.from(x)).map((x) => BrotherDevice.fromJson(x)).where((x) => x.model != null).toList();
   }
 
-  static Future<void> printPDF(String path, BrotherDevice device, [int copies = 1]) async {
+  static Future<void> printPDF(String path, BrotherDevice device, String paperSettingsPath, [int copies = 1]) async {
     assert(path != null);
     assert(device != null);
     assert(copies > 0);
@@ -57,6 +57,7 @@ class BrotherPrinter {
       'macAddress': device.macAddress,
       'serialNumber': device.serialNumber,
       'bleAdvertiseLocalName': device.bleAdvertiseLocalName,
+      'paperSettingsPath': paperSettingsPath,
     });
   }
 }

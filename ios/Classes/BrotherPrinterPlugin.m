@@ -45,18 +45,19 @@
     NSString *ipAddress = [[call arguments] objectForKey:@"ipAddress"];
     NSString *serialNumber = [[call arguments] objectForKey:@"serialNumber"];
     NSString *bleAdvertiseLocalName = [[call arguments] objectForKey:@"bleAdvertiseLocalName"];
+    NSString *paperSettingsPath = [[call arguments] objectForKey:@"paperSettingsPath"];
     
     BRPrinterSession *session = [BRPrinterSession new];
     NSError *error;
     
     if (ipAddress != nil) {
-        [session printPDF:path copies:[copies unsignedIntegerValue] model:[model integerValue] ipAddress:ipAddress error:&error];
+        [session printPDF:path copies:[copies unsignedIntegerValue] model:[model integerValue] paperSettingsPath:paperSettingsPath ipAddress:ipAddress error:&error];
     }
     else if (serialNumber != nil) {
-        [session printPDF:path copies:[copies unsignedIntegerValue] model:[model integerValue] serialNumber:serialNumber error:&error];
+        [session printPDF:path copies:[copies unsignedIntegerValue] model:[model integerValue] paperSettingsPath:paperSettingsPath serialNumber:serialNumber error:&error];
     }
     else if (bleAdvertiseLocalName != nil) {
-        [session printPDF:path copies:[copies unsignedIntegerValue] model:[model integerValue] bleAdvertiseLocalName:bleAdvertiseLocalName error:&error];
+        [session printPDF:path copies:[copies unsignedIntegerValue] model:[model integerValue] paperSettingsPath:paperSettingsPath bleAdvertiseLocalName:bleAdvertiseLocalName error:&error];
     }
     else {
         result([self handleError:[NSError errorWithDomain:BRErrorDomain code:BRPrintErrorCodeMissingParameterError userInfo:nil]]);

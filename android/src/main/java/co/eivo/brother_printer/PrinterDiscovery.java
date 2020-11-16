@@ -77,6 +77,7 @@ class PrinterDiscovery {
                 _isSearchingWifi = false;
                 if (!_isSearchingBLE) {
                     _completionHandler.completion(_results, null);
+                    _completionHandler = null;
                 }
             }
         }).start();
@@ -133,6 +134,7 @@ class PrinterDiscovery {
                 _isSearchingBLE = false;
                 if (!_isSearchingWifi) {
                     _completionHandler.completion(_results, null);
+                    _completionHandler = null;
                 }
             }
         }).start();
