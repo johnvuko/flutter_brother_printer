@@ -68,6 +68,22 @@ Add permissions:
 
 You have to manually authorized the location permission on the device (will be improve later).
 
+#### Warning
+
+You may have some crash in release mode, you can add this to your `android/app/build.gradle`:
+
+```
+    buildTypes {
+        release {
+            minifyEnabled false
+            shrinkResources false
+
+            signingConfig signingConfigs.release
+        }
+    }
+```
+
+
 ## Notes
 
 There are difference between what return the iOS version and the Android version
