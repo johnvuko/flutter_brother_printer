@@ -88,6 +88,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.12.10-nullsafety.1"
+  mdns_plugin:
+    dependency: transitive
+    description:
+      name: mdns_plugin
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.4"
   meta:
     dependency: transitive
     description:

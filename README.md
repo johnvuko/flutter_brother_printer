@@ -31,15 +31,26 @@ In the `Podfile` uncomment:
 In the `Info.plist` add:
 
 ```
-	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>Bluetooth is required for connection to printers.</string>
-	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>Bluetooth is required for connection to printers.</string>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>Bluetooth is required for connection to printers.</string>
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>Bluetooth is required for connection to printers.</string>
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>${PRODUCT_NAME} uses the local network to discover and printers on your network.</string>
     <key>UISupportedExternalAccessoryProtocols</key>
     <array>
         <string>com.brother.ptcbp</string>
     </array>
+    <key>NSBonjourServices</key>
+    <array>
+        <string>_printer._tcp</string>
+    </array>
 ```
+
+#### Warning
+
+Since iOS 14 the detection of printers with BrotherSDK via local network doesn't work (event with "local network" permission).
+In replacement, mDNS protocol is used to detect printers.
 
 ### Android
 

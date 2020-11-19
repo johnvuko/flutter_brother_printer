@@ -50,13 +50,13 @@
     BRPrinterSession *session = [BRPrinterSession new];
     NSError *error;
     
-    if (ipAddress != nil) {
+    if (ipAddress != nil && ipAddress != [NSNull null]) {
         [session printPDF:path copies:[copies unsignedIntegerValue] model:[model integerValue] paperSettingsPath:paperSettingsPath ipAddress:ipAddress error:&error];
     }
-    else if (serialNumber != nil) {
+    else if (serialNumber != nil && serialNumber != [NSNull null]) {
         [session printPDF:path copies:[copies unsignedIntegerValue] model:[model integerValue] paperSettingsPath:paperSettingsPath serialNumber:serialNumber error:&error];
     }
-    else if (bleAdvertiseLocalName != nil) {
+    else if (bleAdvertiseLocalName != nil && bleAdvertiseLocalName != [NSNull null]) {
         [session printPDF:path copies:[copies unsignedIntegerValue] model:[model integerValue] paperSettingsPath:paperSettingsPath bleAdvertiseLocalName:bleAdvertiseLocalName error:&error];
     }
     else {

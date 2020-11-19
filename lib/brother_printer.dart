@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:pedantic/pedantic.dart';
 
 import 'package:flutter/services.dart';
 import 'device.dart';
+import 'discovery.dart';
 import 'model.dart';
 
 export 'device.dart';
@@ -13,8 +15,15 @@ const MethodChannel _channel = MethodChannel('brother_printer');
 class BrotherPrinter {
   static Future<List<BrotherDevice>> searchDevices({
     int delay = 5,
-    bool isEnableIPv6Search = false,
+    bool searchOnIPv6 = false,
+    bool searchWithmDNS = true,
   }) async {
+    if (searchWithmDNS) {
+      unawaited(BrotherDiscoveryService().start());
+    } else {
+      unawaited(BrotherDiscoveryService().stop());
+    }
+
     assert(delay > 0);
 
     List<String> printerNames;
@@ -27,13 +36,19 @@ class BrotherPrinter {
       throw UnimplementedError();
     }
 
-    final List devices = await _channel.invokeMethod('searchDevices', {
+    final List rawDevices = await _channel.invokeMethod('searchDevices', {
       'delay': delay,
-      'isEnableIPv6Search': isEnableIPv6Search,
+      'isEnableIPv6Search': searchOnIPv6,
       'printerNames': printerNames,
     });
 
-    return devices.map((x) => Map<String, String>.from(x)).map((x) => BrotherDevice.fromJson(x)).where((x) => x.model != null).toList();
+    final devices = rawDevices.map((x) => Map<String, String>.from(x)).map((x) => BrotherDevice.fromJson(x)).where((x) => x.model != null).toList();
+    if (searchWithmDNS) {
+      final newDevices = List<BrotherDevice>.from(BrotherDiscoveryService().devices);
+      newDevices.removeWhere((x) => devices.any((y) => y.source == BrotherDeviceSource.network && y.ipAddress == x.ipAddress));
+      devices.addAll(newDevices);
+    }
+    return devices.toSet().toList();
   }
 
   static Future<void> printPDF(String path, BrotherDevice device, String paperSettingsPath, [int copies = 1]) async {
