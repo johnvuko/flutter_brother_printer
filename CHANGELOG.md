@@ -1,3 +1,7 @@
+## 0.0.5
+
+* Fix iOS 14 printers discovery
+
 ## 0.0.4
 
 * Handle custom paper size
