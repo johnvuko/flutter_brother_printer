@@ -86,7 +86,7 @@ public class PrinterSession {
             //     return;
             // }
         }
-        else if (model == PrinterInfo.Model.QL_820NWB) {
+        else if ([PrinterInfo.Model.QL_710W, PrinterInfo.Model.QL_720NW, PrinterInfo.Model.QL_810W, PrinterInfo.Model.QL_820NWB].contains(model)) {
             settings.labelNameIndex = LabelInfo.QL700.W62RB.ordinal();
         }
 
