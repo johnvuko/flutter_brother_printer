@@ -13,6 +13,8 @@ import com.brother.ptouch.sdk.Unit;
 
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 interface BRPrinterSessionCompletion {
     public void completion(Exception exception);
@@ -31,6 +33,8 @@ public class PrinterSession {
 
     void print(Context context, int modelCode, final String path, int copies, String ipAddress, String macAddress, String bleAdvertiseLocalName, String paperSettingsPath, final BRPrinterSessionCompletion completion) {
         PrinterInfo.Model model = PrinterInfo.Model.valueFromID(modelCode);
+
+        List<PrinterInfo.Model> qlSeries = new ArrayList<PrinterInfo.Model>(Arrays.asList(PrinterInfo.Model.QL_710W, PrinterInfo.Model.QL_720NW, PrinterInfo.Model.QL_810W, PrinterInfo.Model.QL_820NWB));
 
         final Printer printer = new Printer();
         final PrinterInfo settings = printer.getPrinterInfo();
@@ -86,7 +90,7 @@ public class PrinterSession {
             //     return;
             // }
         }
-        else if ([PrinterInfo.Model.QL_710W, PrinterInfo.Model.QL_720NW, PrinterInfo.Model.QL_810W, PrinterInfo.Model.QL_820NWB].contains(model)) {
+        else if (qlSeries.contains(model)) {
             settings.labelNameIndex = LabelInfo.QL700.W62RB.ordinal();
         }
 
