@@ -7,22 +7,22 @@
 
 @implementation BRPrinterSession
 
-- (void)printPDF:(nonnull NSString*) path copies:(NSUInteger) copies model:(NSInteger) model paperSettingsPath:(NSString *) paperSettingsPath ipAddress:(nonnull NSString*) ipAddress error:(NSError **)error {
+- (void)printPDF:(nonnull NSString*) path copies:(NSUInteger) copies model:(NSInteger) model paperSettingsPath:(NSString *) paperSettingsPath labelSize:(NSString *) labelSize ipAddress:(nonnull NSString*) ipAddress error:(NSError **)error {
     BRLMChannel *channel = [[BRLMChannel alloc] initWithWifiIPAddress:ipAddress];
-    [self connect:channel path:path copies:copies model:model paperSettingsPath:paperSettingsPath error:error];
+    [self connect:channel path:path copies:copies model:model paperSettingsPath:paperSettingsPath labelSize:labelSize error:error];
 }
 
-- (void)printPDF:(nonnull NSString*) path copies:(NSUInteger) copies model:(NSInteger) model paperSettingsPath:(NSString *) paperSettingsPath serialNumber:(nonnull NSString*) serialNumber error:(NSError **)error {
+- (void)printPDF:(nonnull NSString*) path copies:(NSUInteger) copies model:(NSInteger) model paperSettingsPath:(NSString *) paperSettingsPath labelSize:(NSString *) labelSize serialNumber:(nonnull NSString*) serialNumber error:(NSError **)error {
     BRLMChannel *channel = [[BRLMChannel alloc] initWithBluetoothSerialNumber:serialNumber];
-    [self connect:channel path:path copies:copies model:model paperSettingsPath:paperSettingsPath error:error];
+    [self connect:channel path:path copies:copies model:model paperSettingsPath:paperSettingsPath labelSize:labelSize error:error];
 }
 
-- (void)printPDF:(nonnull NSString*) path copies:(NSUInteger) copies model:(NSInteger) model paperSettingsPath:(NSString *) paperSettingsPath bleAdvertiseLocalName:(nonnull NSString*) bleAdvertiseLocalName error:(NSError **)error {
+- (void)printPDF:(nonnull NSString*) path copies:(NSUInteger) copies model:(NSInteger) model paperSettingsPath:(NSString *) paperSettingsPath labelSize:(NSString *) labelSize bleAdvertiseLocalName:(nonnull NSString*) bleAdvertiseLocalName error:(NSError **)error {
     BRLMChannel *channel = [[BRLMChannel alloc] initWithBLELocalName:bleAdvertiseLocalName];
-    [self connect:channel path:path copies:copies model:model paperSettingsPath:paperSettingsPath error:error];
+    [self connect:channel path:path copies:copies model:model paperSettingsPath:paperSettingsPath labelSize:labelSize error:error];
 }
 
-- (void)connect:(nonnull BRLMChannel*) channel path:(nonnull NSString*) path  copies:(NSUInteger)copies model:(BRLMPrinterModel)model paperSettingsPath:(NSString *) paperSettingsPath error:(NSError **)error {
+- (void)connect:(nonnull BRLMChannel*) channel path:(nonnull NSString*) path  copies:(NSUInteger)copies model:(BRLMPrinterModel)model paperSettingsPath:(NSString *) paperSettingsPath labelSize:(NSString *) labelSize error:(NSError **)error {
     BRLMPrinterDriverGenerateResult *generateResult = [BRLMPrinterDriverGenerator openChannel:channel];
 
     switch (generateResult.error.code) {
@@ -42,14 +42,14 @@
     }
 
     BRLMPrinterDriver *printerDriver = generateResult.driver;
-    [self process:printerDriver path:path copies:copies model:model paperSettingsPath:paperSettingsPath error:error];
+    [self process:printerDriver path:path copies:copies model:model paperSettingsPath:paperSettingsPath labelSize:labelSize error:error];
     [printerDriver closeChannel];
 }
 
-- (void)process:(nonnull BRLMPrinterDriver *) printerDriver path:(nonnull NSString*) path copies:(NSUInteger)copies model:(BRLMPrinterModel)model paperSettingsPath:(NSString *) paperSettingsPath error:(NSError **)error {
+- (void)process:(nonnull BRLMPrinterDriver *) printerDriver path:(nonnull NSString*) path copies:(NSUInteger)copies model:(BRLMPrinterModel)model paperSettingsPath:(NSString *) paperSettingsPath labelSize:(NSString *) labelSize error:(NSError **)error {
     NSURL *url = [NSURL URLWithString:path];
 
-    NSObject <NSCoding, BRLMPrintSettingsProtocol, BRLMPrintImageSettings> * settings = [self settings:model paperSettingsPath:paperSettingsPath];
+    NSObject <NSCoding, BRLMPrintSettingsProtocol, BRLMPrintImageSettings> * settings = [self settings:model paperSettingsPath:paperSettingsPath labelSize:labelSize];
     [settings setNumCopies:copies];
 
     BRLMPrintError *printError = [printerDriver printPDFWithURL:url settings:settings];
@@ -151,7 +151,7 @@
 }
 
 // TODO be able to pass settings from Flutter
--(NSObject <NSCoding, BRLMPrintSettingsProtocol, BRLMPrintImageSettings> *)settings:(BRLMPrinterModel) model paperSettingsPath:(NSString *) paperSettingsPath
+-(NSObject <NSCoding, BRLMPrintSettingsProtocol, BRLMPrintImageSettings> *)settings:(BRLMPrinterModel) model paperSettingsPath:(NSString *) paperSettingsPath labelSize:(NSString *) labelSize
 {
   switch (model)
     {
@@ -216,8 +216,95 @@
     case BRLMPrinterModelQL_1115NWB:
       {
       BRLMQLPrintSettings *settings = [[BRLMQLPrintSettings alloc] initDefaultPrintSettingsWithPrinterModel:model];
-          [settings setLabelSize:BRLMQLPrintSettingsLabelSizeRollW62RB];
-          [settings setAutoCut:TRUE];
+      BRLMQLPrintSettingsLabelSize qlLabelSize;
+
+      if ([labelSize isEqualToString:@"DieCutW17H54"]) {
+        qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW17H54;
+      }
+      else if ([labelSize isEqualToString:@"DieCutW17H87"]) {
+        qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW17H87;
+      }
+      else if ([labelSize isEqualToString:@"DieCutW23H23"]) {
+        qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW23H23;
+      }
+      else if ([labelSize isEqualToString:@"DieCutW29H42"]) {
+        qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW29H42;
+      }
+      else if ([labelSize isEqualToString:@"DieCutW29H90"]) {
+        qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW29H90;
+      }
+      else if ([labelSize isEqualToString:@"DieCutW38H90"]) {
+        qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW38H90;
+      }
+      else if ([labelSize isEqualToString:@"DieCutW39H48"]) {
+        qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW39H48;
+      }
+      else if ([labelSize isEqualToString:@"DieCutW52H29"]) {
+        qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW52H29;
+      }
+      else if ([labelSize isEqualToString:@"DieCutW62H29"]) {
+        qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW62H29;
+      }
+      else if ([labelSize isEqualToString:@"DieCutW62H100"]) {
+        qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW62H100;
+      }
+      else if ([labelSize isEqualToString:@"DieCutW60H86"]) {
+        qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW60H86;
+      }
+      else if ([labelSize isEqualToString:@"DieCutW54H29"]) {
+        qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW54H29;
+      }
+      else if ([labelSize isEqualToString:@"DieCutW102H51"]) {
+        qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW102H51;
+      }
+      else if ([labelSize isEqualToString:@"DieCutW102H152"]) {
+        qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW102H152;
+      }
+      else if ([labelSize isEqualToString:@"DieCutW103H164"]) {
+        qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW103H164;
+      }
+      else if ([labelSize isEqualToString:@"RollW12"]) {
+        qlLabelSize = BRLMQLPrintSettingsLabelSizeRollW12;
+      }
+      else if ([labelSize isEqualToString:@"RollW29"]) {
+        qlLabelSize = BRLMQLPrintSettingsLabelSizeRollW29;
+      }
+      else if ([labelSize isEqualToString:@"RollW38"]) {
+        qlLabelSize = BRLMQLPrintSettingsLabelSizeRollW38;
+      }
+      else if ([labelSize isEqualToString:@"RollW50"]) {
+        qlLabelSize = BRLMQLPrintSettingsLabelSizeRollW50;
+      }
+      else if ([labelSize isEqualToString:@"RollW54"]) {
+        qlLabelSize = BRLMQLPrintSettingsLabelSizeRollW54;
+      }
+      else if ([labelSize isEqualToString:@"RollW62"]) {
+        qlLabelSize = BRLMQLPrintSettingsLabelSizeRollW62;
+      }
+      else if ([labelSize isEqualToString:@"RollW62RB"]) {
+        qlLabelSize = BRLMQLPrintSettingsLabelSizeRollW62RB;
+      }
+      else if ([labelSize isEqualToString:@"RollW102"]) {
+        qlLabelSize = BRLMQLPrintSettingsLabelSizeRollW102;
+      }
+      else if ([labelSize isEqualToString:@"RollW103"]) {
+        qlLabelSize = BRLMQLPrintSettingsLabelSizeRollW103;
+      }
+      else if ([labelSize isEqualToString:@"DTRollW90"]) {
+        qlLabelSize = BRLMQLPrintSettingsLabelSizeDTRollW90;
+      }
+      else if ([labelSize isEqualToString:@"DTRollW102"]) {
+        qlLabelSize = BRLMQLPrintSettingsLabelSizeDTRollW102;
+      }
+      else if ([labelSize isEqualToString:@"DTRollW102H51"]) {
+        qlLabelSize = BRLMQLPrintSettingsLabelSizeDTRollW102H51;
+      }
+      else if ([labelSize isEqualToString:@"DTRollW102H152"]) {
+        qlLabelSize = BRLMQLPrintSettingsLabelSizeDTRollW102H152;
+      }
+
+      [settings setLabelSize:qlLabelSize];
+      [settings setAutoCut:TRUE];
     return settings;
       }
       break;

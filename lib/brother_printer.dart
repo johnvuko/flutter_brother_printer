@@ -5,9 +5,11 @@ import 'package:pedantic/pedantic.dart';
 import 'package:flutter/services.dart';
 import 'device.dart';
 import 'discovery.dart';
+import 'label_size.dart';
 import 'model.dart';
 
 export 'device.dart';
+export 'label_size.dart';
 export 'model.dart';
 
 const MethodChannel _channel = MethodChannel('brother_printer');
@@ -51,7 +53,7 @@ class BrotherPrinter {
     return devices.toSet().toList();
   }
 
-  static Future<void> printPDF(String path, BrotherDevice device, String paperSettingsPath, [int copies = 1]) async {
+  static Future<void> printPDF({String path, BrotherDevice device, String paperSettingsPath, BrotherLabelSize labelSize, int copies = 1}) async {
     assert(path != null);
     assert(device != null);
     assert(copies > 0);
@@ -73,6 +75,7 @@ class BrotherPrinter {
       'serialNumber': device.serialNumber,
       'bleAdvertiseLocalName': device.bleAdvertiseLocalName,
       'paperSettingsPath': paperSettingsPath,
+      'labelSize': labelSize?.toParam(),
     });
   }
 }

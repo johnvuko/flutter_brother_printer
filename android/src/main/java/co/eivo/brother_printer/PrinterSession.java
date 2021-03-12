@@ -31,7 +31,7 @@ class PrinterErrorException extends Exception {
 
 public class PrinterSession {
 
-    void print(Context context, int modelCode, final String path, int copies, String ipAddress, String macAddress, String bleAdvertiseLocalName, String paperSettingsPath, final BRPrinterSessionCompletion completion) {
+    void print(Context context, int modelCode, final String path, int copies, String ipAddress, String macAddress, String bleAdvertiseLocalName, String paperSettingsPath, String labelSize, final BRPrinterSessionCompletion completion) {
         PrinterInfo.Model model = PrinterInfo.Model.valueFromID(modelCode);
 
         List<PrinterInfo.Model> qlSeries = new ArrayList<PrinterInfo.Model>(Arrays.asList(PrinterInfo.Model.QL_710W, PrinterInfo.Model.QL_720NW, PrinterInfo.Model.QL_810W, PrinterInfo.Model.QL_820NWB));
@@ -91,7 +91,73 @@ public class PrinterSession {
             // }
         }
         else if (qlSeries.contains(model)) {
-            settings.labelNameIndex = LabelInfo.QL700.W62RB.ordinal();
+            LabelInfo.QL700 qlLabelSize;
+
+            switch(labelSize)
+                {
+            case "DieCutW17H54":
+                qlLabelSize = LabelInfo.QL700.W17H54;
+                break;
+            case "DieCutW17H87":
+                qlLabelSize = LabelInfo.QL700.W17H87;
+                break;
+            case "DieCutW23H23":
+                qlLabelSize = LabelInfo.QL700.W23H23;
+                break;
+            case "DieCutW29H42":
+                qlLabelSize = LabelInfo.QL700.W29H42;
+                break;
+            case "DieCutW29H90":
+                qlLabelSize = LabelInfo.QL700.W29H90;
+                break;
+            case "DieCutW38H90":
+                qlLabelSize = LabelInfo.QL700.W38H90;
+                break;
+            case "DieCutW39H48":
+                qlLabelSize = LabelInfo.QL700.W39H48;
+                break;
+            case "DieCutW52H29":
+                qlLabelSize = LabelInfo.QL700.W52H29;
+                break;
+            case "DieCutW62H29":
+                qlLabelSize = LabelInfo.QL700.W62H29;
+                break;
+            case "DieCutW62H100":
+                qlLabelSize = LabelInfo.QL700.W62H100;
+                break;
+            case "RollW12":
+                qlLabelSize = LabelInfo.QL700.W12;
+                break;
+            case "RollW29":
+                qlLabelSize = LabelInfo.QL700.W29;
+                break;
+            case "RollW38":
+                qlLabelSize = LabelInfo.QL700.W38;
+                break;
+            case "RollW50":
+                qlLabelSize = LabelInfo.QL700.W50;
+                break;
+            case "RollW54":
+                qlLabelSize = LabelInfo.QL700.W54;
+                break;
+            case "RollW62":
+                qlLabelSize = LabelInfo.QL700.W62;
+                break;
+            case "DieCutW60H86":
+                qlLabelSize = LabelInfo.QL700.W60H86;
+                break;
+            case "DieCutW54H29":
+                qlLabelSize = LabelInfo.QL700.W54H29;
+                break;
+            case "RollW62RB":
+                qlLabelSize = LabelInfo.QL700.W62RB;
+                break;
+            default:
+                completion.completion(new Exception("Invalid label size"));
+                return;
+            }
+
+            settings.labelNameIndex = qlLabelSize.ordinal();
         }
 
         printer.setPrinterInfo(settings);

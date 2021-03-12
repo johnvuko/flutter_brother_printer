@@ -1,3 +1,7 @@
+## 0.0.6
+
+* Add labelSize option for QL series
+
 ## 0.0.5
 
 * Fix iOS 14 printers discovery

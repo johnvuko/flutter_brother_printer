@@ -46,18 +46,19 @@
     NSString *serialNumber = [[call arguments] objectForKey:@"serialNumber"];
     NSString *bleAdvertiseLocalName = [[call arguments] objectForKey:@"bleAdvertiseLocalName"];
     NSString *paperSettingsPath = [[call arguments] objectForKey:@"paperSettingsPath"];
+    NSString *labelSize = [[call arguments] objectForKey:@"labelSize"];
     
     BRPrinterSession *session = [BRPrinterSession new];
     NSError *error;
     
     if (ipAddress != nil && ipAddress != [NSNull null]) {
-        [session printPDF:path copies:[copies unsignedIntegerValue] model:[model integerValue] paperSettingsPath:paperSettingsPath ipAddress:ipAddress error:&error];
+        [session printPDF:path copies:[copies unsignedIntegerValue] model:[model integerValue] paperSettingsPath:paperSettingsPath labelSize:labelSize ipAddress:ipAddress error:&error];
     }
     else if (serialNumber != nil && serialNumber != [NSNull null]) {
-        [session printPDF:path copies:[copies unsignedIntegerValue] model:[model integerValue] paperSettingsPath:paperSettingsPath serialNumber:serialNumber error:&error];
+        [session printPDF:path copies:[copies unsignedIntegerValue] model:[model integerValue] paperSettingsPath:paperSettingsPath labelSize:labelSize serialNumber:serialNumber error:&error];
     }
     else if (bleAdvertiseLocalName != nil && bleAdvertiseLocalName != [NSNull null]) {
-        [session printPDF:path copies:[copies unsignedIntegerValue] model:[model integerValue] paperSettingsPath:paperSettingsPath bleAdvertiseLocalName:bleAdvertiseLocalName error:&error];
+        [session printPDF:path copies:[copies unsignedIntegerValue] model:[model integerValue] paperSettingsPath:paperSettingsPath labelSize:labelSize bleAdvertiseLocalName:bleAdvertiseLocalName error:&error];
     }
     else {
         result([self handleError:[NSError errorWithDomain:BRErrorDomain code:BRPrintErrorCodeMissingParameterError userInfo:nil]]);
