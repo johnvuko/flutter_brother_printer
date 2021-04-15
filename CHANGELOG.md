@@ -1,3 +1,7 @@
+## 0.0.7
+
+* Handle USB device (Android only)
+
 ## 0.0.6
 
 * Add labelSize option for QL series
