@@ -44,6 +44,8 @@ In the `Info.plist` add:
     <key>NSBonjourServices</key>
     <array>
         <string>_printer._tcp</string>
+        <string>_pdl-datastream._tcp</string>
+        <string>_ipp._tcp</string>
     </array>
 ```
 

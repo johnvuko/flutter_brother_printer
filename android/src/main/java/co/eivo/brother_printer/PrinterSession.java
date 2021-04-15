@@ -1,8 +1,16 @@
 package co.eivo.brother_printer;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.util.Log;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.hardware.usb.UsbDevice;
+import android.hardware.usb.UsbManager;
 
 import com.brother.ptouch.sdk.CustomPaperInfo;
 import com.brother.ptouch.sdk.LabelInfo;
@@ -31,7 +39,26 @@ class PrinterErrorException extends Exception {
 
 public class PrinterSession {
 
-    void print(Context context, int modelCode, final String path, int copies, String ipAddress, String macAddress, String bleAdvertiseLocalName, String paperSettingsPath, String labelSize, final BRPrinterSessionCompletion completion) {
+    static final String ACTION_USB_PERMISSION = "com.android.example.USB_PERMISSION";
+    private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (ACTION_USB_PERMISSION.equals(action)) {
+                synchronized (this) {
+                    if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
+                        //
+                    }
+                    else {
+                        //
+                    }
+
+                }
+            }
+        }
+    };
+
+    void print(Activity activity, Context context, int modelCode, final String path, int copies, String ipAddress, String macAddress, String bleAdvertiseLocalName, String paperSettingsPath, String labelSize, final BRPrinterSessionCompletion completion) {
         PrinterInfo.Model model = PrinterInfo.Model.valueFromID(modelCode);
 
         List<PrinterInfo.Model> qlSeries = new ArrayList<PrinterInfo.Model>(Arrays.asList(PrinterInfo.Model.QL_710W, PrinterInfo.Model.QL_720NW, PrinterInfo.Model.QL_810W, PrinterInfo.Model.QL_820NWB));
@@ -54,6 +81,21 @@ public class PrinterSession {
         } else if (bleAdvertiseLocalName != null) {
             settings.port = PrinterInfo.Port.BLE;
             settings.setLocalName(bleAdvertiseLocalName);
+        } else {
+            settings.port = PrinterInfo.Port.USB;
+
+            UsbManager usbManager = (UsbManager) activity.getSystemService(Context.USB_SERVICE);
+            UsbDevice usbDevice = printer.getUsbDevice(usbManager);
+            if (usbDevice == null) {
+                Log.d("BrotherPrinterPlugin", "no USB device");
+                completion.completion(new Exception("no USB device"));
+                return;
+            }
+            PendingIntent permissionIntent = PendingIntent.getBroadcast(activity, 0, new Intent(ACTION_USB_PERMISSION), 0);
+            activity.registerReceiver(mUsbReceiver, new IntentFilter(ACTION_USB_PERMISSION));
+            if (!usbManager.hasPermission(usbDevice)) {
+                usbManager.requestPermission(usbDevice, permissionIntent);
+            }
         }
 
         if (model == PrinterInfo.Model.TD_2120N || model == PrinterInfo.Model.TD_2130N) {

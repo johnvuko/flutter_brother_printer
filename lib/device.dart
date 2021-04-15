@@ -9,6 +9,7 @@ enum BrotherDeviceSource {
   network,
   bluetooth,
   ble,
+  usb,
 }
 
 extension on BrotherDeviceSource {
@@ -20,6 +21,8 @@ extension on BrotherDeviceSource {
         return 'bluetooth';
       case BrotherDeviceSource.ble:
         return 'ble';
+      case BrotherDeviceSource.usb:
+        return 'usb';
     }
     return null;
   }
@@ -38,7 +41,7 @@ class BrotherDevice extends Equatable {
   final BrotherModel model;
 
   /// For iOS must set at least `ipAddress` or `serialNumber`or `bleAdvertiseLocalName`
-  /// For Android must set at least `ipAddress` or `macAddress` or `bleAdvertiseLocalName`
+  /// For Android must set at least `ipAddress` or `macAddress` or `bleAdvertiseLocalName` or it should be connected in USB
   const BrotherDevice({
     @required this.source,
     @required this.model,
@@ -63,6 +66,18 @@ class BrotherDevice extends Equatable {
         bleAdvertiseLocalName = json['bleAdvertiseLocalName'],
         source = _findSource(json['source']),
         model = _findModel(json['modelName'], json['printerName'], json['bleAdvertiseLocalName'], json['source'] == 'bluetooth');
+
+  /// USB devices doesn't work on iOS
+  BrotherDevice.fromUSBDevice(@required this.model)
+      : source = BrotherDeviceSource.usb,
+        modelName = model.nameAndroid,
+        ipAddress = null,
+        location = null,
+        printerName = null,
+        serialNumber = null,
+        nodeName = null,
+        macAddress = null,
+        bleAdvertiseLocalName = null;
 
   @override
   List<Object> get props => [
@@ -134,6 +149,8 @@ class BrotherDevice extends Equatable {
         return BrotherDeviceSource.bluetooth;
       case 'ble':
         return BrotherDeviceSource.ble;
+      case 'usb':
+        return BrotherDeviceSource.usb;
     }
 
     throw '[BrotherDevice] invalid source $source';
