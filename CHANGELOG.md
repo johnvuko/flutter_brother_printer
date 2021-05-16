@@ -1,3 +1,7 @@
+## 0.0.8
+
+* Support PDF with multiple pages on Android
+
 ## 0.0.7
 
 * Handle USB device (Android only)
