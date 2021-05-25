@@ -213,7 +213,7 @@ extension BrotherLabelSizeExtension on BrotherLabelSize {
     }
   }
 
-  int get height {
+  int? get height {
     switch (this) {
       case BrotherLabelSize.DieCutW17H54:
         return 54;

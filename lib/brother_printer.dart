@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:pedantic/pedantic.dart';
 
 import 'package:flutter/services.dart';
 import 'device.dart';
-import 'discovery.dart';
 import 'label_size.dart';
 import 'model.dart';
 
@@ -18,14 +16,7 @@ class BrotherPrinter {
   static Future<List<BrotherDevice>> searchDevices({
     int delay = 5,
     bool searchOnIPv6 = false,
-    bool searchWithmDNS = true,
   }) async {
-    if (searchWithmDNS) {
-      unawaited(BrotherDiscoveryService().start());
-    } else {
-      unawaited(BrotherDiscoveryService().stop());
-    }
-
     assert(delay > 0);
 
     List<String> printerNames;
@@ -44,18 +35,18 @@ class BrotherPrinter {
       'printerNames': printerNames,
     });
 
-    final devices = rawDevices.map((x) => Map<String, String>.from(x)).map((x) => BrotherDevice.fromJson(x)).where((x) => x.model != null).toList();
-    if (searchWithmDNS) {
-      final newDevices = List<BrotherDevice>.from(BrotherDiscoveryService().devices);
-      newDevices.removeWhere((x) => devices.any((y) => y.source == BrotherDeviceSource.network && y.ipAddress == x.ipAddress));
-      devices.addAll(newDevices);
-    }
+    final devices =
+        rawDevices.map((x) => Map<String, String?>.from(x)).map((x) => BrotherDevice.fromJson(x)).whereType<BrotherDevice>().toList();
     return devices.toSet().toList();
   }
 
-  static Future<void> printPDF({String path, BrotherDevice device, String paperSettingsPath, BrotherLabelSize labelSize, int copies = 1}) async {
-    assert(path != null);
-    assert(device != null);
+  static Future<void> printPDF({
+    required String path,
+    required BrotherDevice device,
+    String? paperSettingsPath,
+    BrotherLabelSize? labelSize,
+    int copies = 1,
+  }) async {
     assert(copies > 0);
 
     int modelCode;
@@ -64,6 +55,8 @@ class BrotherPrinter {
       modelCode = device.model.codeIOS;
     } else if (Platform.isAndroid) {
       modelCode = device.model.codeAndroid;
+    } else {
+      throw UnimplementedError();
     }
 
     await _channel.invokeMethod('printPDF', {

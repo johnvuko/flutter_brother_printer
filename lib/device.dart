@@ -1,8 +1,7 @@
 import 'dart:io';
 
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
-
+import 'package:collection/collection.dart';
 import 'model.dart';
 
 enum BrotherDeviceSource {
@@ -24,30 +23,29 @@ extension on BrotherDeviceSource {
       case BrotherDeviceSource.usb:
         return 'usb';
     }
-    return null;
   }
 }
 
 class BrotherDevice extends Equatable {
-  final String ipAddress;
-  final String location;
+  final String? ipAddress;
+  final String? location;
   final String modelName;
-  final String printerName;
-  final String serialNumber;
-  final String nodeName;
-  final String macAddress;
-  final String bleAdvertiseLocalName;
+  final String? printerName;
+  final String? serialNumber;
+  final String? nodeName;
+  final String? macAddress;
+  final String? bleAdvertiseLocalName;
   final BrotherDeviceSource source;
   final BrotherModel model;
 
   /// For iOS must set at least `ipAddress` or `serialNumber`or `bleAdvertiseLocalName`
   /// For Android must set at least `ipAddress` or `macAddress` or `bleAdvertiseLocalName` or it should be connected in USB
   const BrotherDevice({
-    @required this.source,
-    @required this.model,
+    required this.source,
+    required this.model,
+    required this.modelName,
     this.ipAddress,
     this.location,
-    this.modelName,
     this.printerName,
     this.serialNumber,
     this.nodeName,
@@ -55,20 +53,44 @@ class BrotherDevice extends Equatable {
     this.bleAdvertiseLocalName,
   });
 
-  BrotherDevice.fromJson(Map<String, String> json)
-      : ipAddress = json['ipAddress'],
-        location = json['location'],
-        modelName = json['modelName'],
-        printerName = json['printerName'],
-        serialNumber = json['serialNumber'],
-        nodeName = json['nodeName'],
-        macAddress = json['macAddress'],
-        bleAdvertiseLocalName = json['bleAdvertiseLocalName'],
-        source = _findSource(json['source']),
-        model = _findModel(json['modelName'], json['printerName'], json['bleAdvertiseLocalName'], json['source'] == 'bluetooth');
+  static BrotherDevice? fromJson(Map<String, String?> json) {
+    if (json['modelName'] == null || json['source'] == null) {
+      return null;
+    }
+
+    final modelFound = _findModel(
+      json['modelName']!,
+      json['printerName'],
+      json['bleAdvertiseLocalName'],
+      json['source'] == 'bluetooth',
+    );
+
+    if (modelFound == null) {
+      return null;
+    }
+
+    final sourceFound = _findSource(json['source']!);
+
+    if (sourceFound == null) {
+      return null;
+    }
+
+    return BrotherDevice(
+      model: modelFound,
+      ipAddress: json['ipAddress'],
+      location: json['location'],
+      modelName: json['modelName']!,
+      printerName: json['printerName'],
+      serialNumber: json['serialNumber'],
+      nodeName: json['nodeName'],
+      macAddress: json['macAddress'],
+      bleAdvertiseLocalName: json['bleAdvertiseLocalName'],
+      source: sourceFound,
+    );
+  }
 
   /// USB devices doesn't work on iOS
-  BrotherDevice.fromUSBDevice(@required this.model)
+  BrotherDevice.fromUSBDevice(this.model)
       : source = BrotherDeviceSource.usb,
         modelName = model.nameAndroid,
         ipAddress = null,
@@ -80,7 +102,7 @@ class BrotherDevice extends Equatable {
         bleAdvertiseLocalName = null;
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         source,
         ipAddress,
         location,
@@ -93,7 +115,7 @@ class BrotherDevice extends Equatable {
         model,
       ];
 
-  Map<String, String> toJson() {
+  Map<String, String?> toJson() {
     return {
       'source': source.toJsonString(),
       'ipAddress': ipAddress,
@@ -116,19 +138,24 @@ class BrotherDevice extends Equatable {
       ipAddress,
       serialNumber,
       macAddress,
-    ].where((x) => x != null).first;
+    ].whereType<String>().first;
   }
 
-  static BrotherModel _findModel(String modelName, String printerlName, String bleAdvertiseLocalName, bool isBluetooth) {
-    final model = brotherModels.firstWhere((model) {
+  static BrotherModel? _findModel(
+    String modelName,
+    String? printerlName,
+    String? bleAdvertiseLocalName,
+    bool isBluetooth,
+  ) {
+    final model = brotherModels.firstWhereOrNull((model) {
       final texts = [
         modelName,
         bleAdvertiseLocalName,
         printerlName,
-      ].where((x) => x != null).map((x) => x.replaceAll('_', '-').replaceAll('Brother', '').replaceAll(' ', '')).toList();
+      ].whereType<String>().map((x) => x.replaceAll('_', '-').replaceAll('Brother', '').replaceAll(' ', '')).toList();
 
       return texts.any((x) => x.contains(model.nameAndroid));
-    }, orElse: () => null);
+    });
 
     if (model == null) {
       // on Android get every paired bluetooth devices without filtering Brother's printers
@@ -141,7 +168,7 @@ class BrotherDevice extends Equatable {
     return model;
   }
 
-  static BrotherDeviceSource _findSource(String source) {
+  static BrotherDeviceSource? _findSource(String source) {
     switch (source) {
       case 'network':
         return BrotherDeviceSource.network;
@@ -153,6 +180,6 @@ class BrotherDevice extends Equatable {
         return BrotherDeviceSource.usb;
     }
 
-    throw '[BrotherDevice] invalid source $source';
+    return null;
   }
 }

@@ -49,11 +49,6 @@ In the `Info.plist` add:
     </array>
 ```
 
-#### Warning
-
-Since iOS 14 the detection of printers with BrotherSDK via local network doesn't work (event with "local network" permission).
-In replacement, mDNS protocol is used to detect printers.
-
 ### Android
 
 Connection doesn't seem to work on emulator.

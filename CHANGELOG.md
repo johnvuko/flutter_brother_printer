@@ -1,31 +1,35 @@
-## 0.0.8
+## [0.1.0]
+
+* Migrate to null safety
+
+## [0.0.8]
 
 * Support PDF with multiple pages on Android
 
-## 0.0.7
+## [0.0.7]
 
 * Handle USB device (Android only)
 
-## 0.0.6
+## [0.0.6]
 
 * Add labelSize option for QL series
 
-## 0.0.5
+## [0.0.5]
 
 * Fix iOS 14 printers discovery
 
-## 0.0.4
+## [0.0.4]
 
 * Handle custom paper size
 
-## 0.0.3
+## [0.0.3]
 
 * Add option `copies`
 
-## 0.0.2
+## [0.0.2]
 
 * Fix serialization of BrotherDevice
 
-## 0.0.1
+## [0.0.1]
 
 * Initial release, work in progress

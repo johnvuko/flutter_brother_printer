@@ -7,10 +7,10 @@ class BrotherModel extends Equatable {
   final String nameAndroid; // 'QL-820NWB' for `getNetPrinters` method
 
   const BrotherModel({
-    this.codeIOS,
-    this.nameIOS,
-    this.codeAndroid,
-    this.nameAndroid,
+    required this.codeIOS,
+    required this.nameIOS,
+    required this.codeAndroid,
+    required this.nameAndroid,
   });
 
   @override
