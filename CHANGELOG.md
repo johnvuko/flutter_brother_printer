@@ -1,3 +1,7 @@
+## [0.1.1]
+
+* Fix Android compilation
+
 ## [0.1.0]
 
 * Migrate to null safety
