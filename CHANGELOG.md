@@ -1,3 +1,7 @@
+## [0.1.2]
+
+* Prevent iOS native crash
+
 ## [0.1.1]
 
 * Fix Android compilation

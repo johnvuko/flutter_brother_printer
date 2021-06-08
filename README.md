@@ -7,6 +7,13 @@ Brother printer SDK for Flutter using native SDK v4 on iOS and v3 on Android.
 Be sure to read requirements of the native SDK:
 https://support.brother.com/g/s/es/htmldoc/mobilesdk/
 
+Add this to your package's pubspec.yaml file:
+
+```
+dependencies:
+  brother_printer: ^0.1.2
+```
+
 ### iOS
 
 In the `Podfile` uncomment:
