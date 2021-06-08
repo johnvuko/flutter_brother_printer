@@ -196,16 +196,17 @@
     case BRLMPrinterModelTD_4550DNWB:
       {
           BRLMTDPrintSettings *settings = [[BRLMTDPrintSettings alloc] initDefaultPrintSettingsWithPrinterModel:model];
-          NSURL *customPaperFileUrl = [NSURL URLWithString:paperSettingsPath];
-          BRLMCustomPaperSize *paperSize = [[BRLMCustomPaperSize alloc] initWithFile:customPaperFileUrl];
-          // BRLMCustomPaperSize *paperSize = [[BRLMCustomPaperSize alloc] initDieCutWithTapeWidth:51
-          //                                                                            tapeLength:26
-          //                                                                               margins:BRLMCustomPaperSizeMarginsMake(3, 3, 3, 3)
-          //                                                                             gapLength:3
-          //                                                                          unitOfLength:BRLMCustomPaperSizeLengthUnitMm];
+
+          if (paperSettingsPath != nil && paperSettingsPath != [NSNull null]) {
+            NSURL *customPaperFileUrl = [NSURL URLWithString:paperSettingsPath];
+            BRLMCustomPaperSize *paperSize = [[BRLMCustomPaperSize alloc] initWithFile:customPaperFileUrl];
+
+            [settings setCustomPaperSize:paperSize];
+          }
+
           [settings setPeelLabel:TRUE];
-          [settings setCustomPaperSize:paperSize];
-    return settings;
+          
+          return settings;
       }
       break;
     case BRLMPrinterModelQL_710W:
@@ -216,94 +217,99 @@
     case BRLMPrinterModelQL_1115NWB:
       {
       BRLMQLPrintSettings *settings = [[BRLMQLPrintSettings alloc] initDefaultPrintSettingsWithPrinterModel:model];
-      BRLMQLPrintSettingsLabelSize qlLabelSize;
 
-      if ([labelSize isEqualToString:@"DieCutW17H54"]) {
-        qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW17H54;
-      }
-      else if ([labelSize isEqualToString:@"DieCutW17H87"]) {
-        qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW17H87;
-      }
-      else if ([labelSize isEqualToString:@"DieCutW23H23"]) {
-        qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW23H23;
-      }
-      else if ([labelSize isEqualToString:@"DieCutW29H42"]) {
-        qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW29H42;
-      }
-      else if ([labelSize isEqualToString:@"DieCutW29H90"]) {
-        qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW29H90;
-      }
-      else if ([labelSize isEqualToString:@"DieCutW38H90"]) {
-        qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW38H90;
-      }
-      else if ([labelSize isEqualToString:@"DieCutW39H48"]) {
-        qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW39H48;
-      }
-      else if ([labelSize isEqualToString:@"DieCutW52H29"]) {
-        qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW52H29;
-      }
-      else if ([labelSize isEqualToString:@"DieCutW62H29"]) {
-        qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW62H29;
-      }
-      else if ([labelSize isEqualToString:@"DieCutW62H100"]) {
-        qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW62H100;
-      }
-      else if ([labelSize isEqualToString:@"DieCutW60H86"]) {
-        qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW60H86;
-      }
-      else if ([labelSize isEqualToString:@"DieCutW54H29"]) {
-        qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW54H29;
-      }
-      else if ([labelSize isEqualToString:@"DieCutW102H51"]) {
-        qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW102H51;
-      }
-      else if ([labelSize isEqualToString:@"DieCutW102H152"]) {
-        qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW102H152;
-      }
-      else if ([labelSize isEqualToString:@"DieCutW103H164"]) {
-        qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW103H164;
-      }
-      else if ([labelSize isEqualToString:@"RollW12"]) {
-        qlLabelSize = BRLMQLPrintSettingsLabelSizeRollW12;
-      }
-      else if ([labelSize isEqualToString:@"RollW29"]) {
-        qlLabelSize = BRLMQLPrintSettingsLabelSizeRollW29;
-      }
-      else if ([labelSize isEqualToString:@"RollW38"]) {
-        qlLabelSize = BRLMQLPrintSettingsLabelSizeRollW38;
-      }
-      else if ([labelSize isEqualToString:@"RollW50"]) {
-        qlLabelSize = BRLMQLPrintSettingsLabelSizeRollW50;
-      }
-      else if ([labelSize isEqualToString:@"RollW54"]) {
-        qlLabelSize = BRLMQLPrintSettingsLabelSizeRollW54;
-      }
-      else if ([labelSize isEqualToString:@"RollW62"]) {
-        qlLabelSize = BRLMQLPrintSettingsLabelSizeRollW62;
-      }
-      else if ([labelSize isEqualToString:@"RollW62RB"]) {
-        qlLabelSize = BRLMQLPrintSettingsLabelSizeRollW62RB;
-      }
-      else if ([labelSize isEqualToString:@"RollW102"]) {
-        qlLabelSize = BRLMQLPrintSettingsLabelSizeRollW102;
-      }
-      else if ([labelSize isEqualToString:@"RollW103"]) {
-        qlLabelSize = BRLMQLPrintSettingsLabelSizeRollW103;
-      }
-      else if ([labelSize isEqualToString:@"DTRollW90"]) {
-        qlLabelSize = BRLMQLPrintSettingsLabelSizeDTRollW90;
-      }
-      else if ([labelSize isEqualToString:@"DTRollW102"]) {
-        qlLabelSize = BRLMQLPrintSettingsLabelSizeDTRollW102;
-      }
-      else if ([labelSize isEqualToString:@"DTRollW102H51"]) {
-        qlLabelSize = BRLMQLPrintSettingsLabelSizeDTRollW102H51;
-      }
-      else if ([labelSize isEqualToString:@"DTRollW102H152"]) {
-        qlLabelSize = BRLMQLPrintSettingsLabelSizeDTRollW102H152;
+      if (labelSize != nil && labelSize != [NSNull null]) {
+        BRLMQLPrintSettingsLabelSize qlLabelSize;
+
+        if ([labelSize isEqualToString:@"DieCutW17H54"]) {
+          qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW17H54;
+        }
+        else if ([labelSize isEqualToString:@"DieCutW17H87"]) {
+          qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW17H87;
+        }
+        else if ([labelSize isEqualToString:@"DieCutW23H23"]) {
+          qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW23H23;
+        }
+        else if ([labelSize isEqualToString:@"DieCutW29H42"]) {
+          qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW29H42;
+        }
+        else if ([labelSize isEqualToString:@"DieCutW29H90"]) {
+          qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW29H90;
+        }
+        else if ([labelSize isEqualToString:@"DieCutW38H90"]) {
+          qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW38H90;
+        }
+        else if ([labelSize isEqualToString:@"DieCutW39H48"]) {
+          qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW39H48;
+        }
+        else if ([labelSize isEqualToString:@"DieCutW52H29"]) {
+          qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW52H29;
+        }
+        else if ([labelSize isEqualToString:@"DieCutW62H29"]) {
+          qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW62H29;
+        }
+        else if ([labelSize isEqualToString:@"DieCutW62H100"]) {
+          qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW62H100;
+        }
+        else if ([labelSize isEqualToString:@"DieCutW60H86"]) {
+          qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW60H86;
+        }
+        else if ([labelSize isEqualToString:@"DieCutW54H29"]) {
+          qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW54H29;
+        }
+        else if ([labelSize isEqualToString:@"DieCutW102H51"]) {
+          qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW102H51;
+        }
+        else if ([labelSize isEqualToString:@"DieCutW102H152"]) {
+          qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW102H152;
+        }
+        else if ([labelSize isEqualToString:@"DieCutW103H164"]) {
+          qlLabelSize = BRLMQLPrintSettingsLabelSizeDieCutW103H164;
+        }
+        else if ([labelSize isEqualToString:@"RollW12"]) {
+          qlLabelSize = BRLMQLPrintSettingsLabelSizeRollW12;
+        }
+        else if ([labelSize isEqualToString:@"RollW29"]) {
+          qlLabelSize = BRLMQLPrintSettingsLabelSizeRollW29;
+        }
+        else if ([labelSize isEqualToString:@"RollW38"]) {
+          qlLabelSize = BRLMQLPrintSettingsLabelSizeRollW38;
+        }
+        else if ([labelSize isEqualToString:@"RollW50"]) {
+          qlLabelSize = BRLMQLPrintSettingsLabelSizeRollW50;
+        }
+        else if ([labelSize isEqualToString:@"RollW54"]) {
+          qlLabelSize = BRLMQLPrintSettingsLabelSizeRollW54;
+        }
+        else if ([labelSize isEqualToString:@"RollW62"]) {
+          qlLabelSize = BRLMQLPrintSettingsLabelSizeRollW62;
+        }
+        else if ([labelSize isEqualToString:@"RollW62RB"]) {
+          qlLabelSize = BRLMQLPrintSettingsLabelSizeRollW62RB;
+        }
+        else if ([labelSize isEqualToString:@"RollW102"]) {
+          qlLabelSize = BRLMQLPrintSettingsLabelSizeRollW102;
+        }
+        else if ([labelSize isEqualToString:@"RollW103"]) {
+          qlLabelSize = BRLMQLPrintSettingsLabelSizeRollW103;
+        }
+        else if ([labelSize isEqualToString:@"DTRollW90"]) {
+          qlLabelSize = BRLMQLPrintSettingsLabelSizeDTRollW90;
+        }
+        else if ([labelSize isEqualToString:@"DTRollW102"]) {
+          qlLabelSize = BRLMQLPrintSettingsLabelSizeDTRollW102;
+        }
+        else if ([labelSize isEqualToString:@"DTRollW102H51"]) {
+          qlLabelSize = BRLMQLPrintSettingsLabelSizeDTRollW102H51;
+        }
+        else if ([labelSize isEqualToString:@"DTRollW102H152"]) {
+          qlLabelSize = BRLMQLPrintSettingsLabelSizeDTRollW102H152;
+        }
+
+        [settings setLabelSize:qlLabelSize];
+
       }
 
-      [settings setLabelSize:qlLabelSize];
       [settings setAutoCut:TRUE];
     return settings;
       }

@@ -17,7 +17,15 @@
   if ([@"searchDevices" isEqualToString:call.method]) {
       [self searchDevices:call result:result];
   } else if ([@"printPDF" isEqualToString:call.method]) {
-      [self printPDF:call result:result];
+      @try {
+          [self printPDF:call result:result];
+      }
+      @catch (NSError *error) {
+          result([FlutterError errorWithCode:@"Unknown error" message:[error localizedDescription] details:nil]);
+      }
+      @catch (NSException *exception) {
+        result([FlutterError errorWithCode:[exception name] message:[exception reason] details:nil]);
+      }
   } else {
       result(FlutterMethodNotImplemented);
   }
