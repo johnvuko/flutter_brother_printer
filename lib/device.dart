@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:equatable/equatable.dart';
 import 'package:collection/collection.dart';
 import 'model.dart';
@@ -54,15 +52,14 @@ class BrotherDevice extends Equatable {
   });
 
   static BrotherDevice? fromJson(Map<String, String?> json) {
-    if (json['modelName'] == null || json['source'] == null) {
+    if ((json['modelName'] == null && json['printerName'] == null && json['bleAdvertiseLocalName'] == null) || json['source'] == null) {
       return null;
     }
 
     final modelFound = _findModel(
-      json['modelName']!,
+      json['modelName'],
       json['printerName'],
       json['bleAdvertiseLocalName'],
-      json['source'] == 'bluetooth',
     );
 
     if (modelFound == null) {
@@ -79,7 +76,7 @@ class BrotherDevice extends Equatable {
       model: modelFound,
       ipAddress: json['ipAddress'],
       location: json['location'],
-      modelName: json['modelName']!,
+      modelName: json['modelName'] ?? modelFound.nameAndroid,
       printerName: json['printerName'],
       serialNumber: json['serialNumber'],
       nodeName: json['nodeName'],
@@ -142,10 +139,9 @@ class BrotherDevice extends Equatable {
   }
 
   static BrotherModel? _findModel(
-    String modelName,
+    String? modelName,
     String? printerlName,
     String? bleAdvertiseLocalName,
-    bool isBluetooth,
   ) {
     final model = brotherModels.firstWhereOrNull((model) {
       final texts = [
@@ -156,14 +152,6 @@ class BrotherDevice extends Equatable {
 
       return texts.any((x) => x.contains(model.nameAndroid));
     });
-
-    if (model == null) {
-      // on Android get every paired bluetooth devices without filtering Brother's printers
-      // so doesn't display a warning in this case and just ignore the device
-      if (!(isBluetooth && Platform.isAndroid)) {
-        print('[BrotherDevice] cannot find printer model with modelName $modelName - printerlName $printerlName - bleAdvertiseLocalName: $bleAdvertiseLocalName');
-      }
-    }
 
     return model;
   }

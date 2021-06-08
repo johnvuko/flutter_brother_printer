@@ -1,3 +1,7 @@
+## [0.1.3]
+
+* Fix bug detection bluetooth
+
 ## [0.1.2]
 
 * Prevent iOS native crash

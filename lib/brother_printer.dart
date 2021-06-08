@@ -35,8 +35,8 @@ class BrotherPrinter {
       'printerNames': printerNames,
     });
 
-    final devices =
-        rawDevices.map((x) => Map<String, String?>.from(x)).map((x) => BrotherDevice.fromJson(x)).whereType<BrotherDevice>().toList();
+    final devices = rawDevices.map((x) => Map<String, String?>.from(x)).map((x) => BrotherDevice.fromJson(x)).whereType<BrotherDevice>().toList();
+
     return devices.toSet().toList();
   }
 
