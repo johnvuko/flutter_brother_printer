@@ -86,6 +86,17 @@ class BrotherDevice extends Equatable {
     );
   }
 
+  BrotherDevice.fromNetwork(this.model, String ipAddress)
+      : source = BrotherDeviceSource.network,
+        modelName = model.nameAndroid,
+        ipAddress = ipAddress,
+        location = null,
+        printerName = null,
+        serialNumber = null,
+        nodeName = null,
+        macAddress = null,
+        bleAdvertiseLocalName = null;
+
   /// USB devices doesn't work on iOS
   BrotherDevice.fromUSBDevice(this.model)
       : source = BrotherDeviceSource.usb,
