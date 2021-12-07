@@ -1,3 +1,7 @@
+## [0.1.4]
+
+* Can create BrotherDevice with ipAddress
+
 ## [0.1.3]
 
 * Fix bug detection bluetooth
