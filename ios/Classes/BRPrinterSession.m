@@ -311,7 +311,7 @@
       }
 
       [settings setAutoCut:TRUE];
-    return settings;
+      return settings;
       }
       break;
     case BRLMPrinterModelPT_E550W:
@@ -327,7 +327,55 @@
     case BRLMPrinterModelPT_P910BT:
       {
       BRLMPTPrintSettings *settings = [[BRLMPTPrintSettings alloc] initDefaultPrintSettingsWithPrinterModel:model];
-    return settings;
+
+      if (labelSize != nil && labelSize != [NSNull null]) {
+        BRLMPTPrintSettingsLabelSize printerLabelSize;
+
+        if ([labelSize isEqualToString:@"3_5mm"]) {
+          printerLabelSize = BRLMPTPrintSettingsLabelSizeWidth3_5mm;
+        }
+        else if ([labelSize isEqualToString:@"6mm"]) {
+          printerLabelSize = BRLMPTPrintSettingsLabelSizeWidth6mm;
+        }
+        else if ([labelSize isEqualToString:@"9mm"]) {
+          printerLabelSize = BRLMPTPrintSettingsLabelSizeWidth9mm;
+        }
+        else if ([labelSize isEqualToString:@"12mm"]) {
+          printerLabelSize = BRLMPTPrintSettingsLabelSizeWidth12mm;
+        }
+        else if ([labelSize isEqualToString:@"18mm"]) {
+          printerLabelSize = BRLMPTPrintSettingsLabelSizeWidth18mm;
+        }
+        else if ([labelSize isEqualToString:@"24mm"]) {
+          printerLabelSize = BRLMPTPrintSettingsLabelSizeWidth24mm;
+        }
+        else if ([labelSize isEqualToString:@"36mm"]) {
+          printerLabelSize = BRLMPTPrintSettingsLabelSizeWidth36mm;
+        }
+        else if ([labelSize isEqualToString:@"HS_5_8mm"]) {
+          printerLabelSize = BRLMPTPrintSettingsLabelSizeWidthHS_5_8mm;
+        }
+        else if ([labelSize isEqualToString:@"HS_8_8mm"]) {
+          printerLabelSize = BRLMPTPrintSettingsLabelSizeWidthHS_8_8mm;
+        }
+        else if ([labelSize isEqualToString:@"HS_11_7mm"]) {
+          printerLabelSize = BRLMPTPrintSettingsLabelSizeWidthHS_11_7mm;
+        }
+        else if ([labelSize isEqualToString:@"HS_17_7mm"]) {
+          printerLabelSize = BRLMPTPrintSettingsLabelSizeWidthHS_17_7mm;
+        }
+        else if ([labelSize isEqualToString:@"HS_23_6mm"]) {
+          printerLabelSize = BRLMPTPrintSettingsLabelSizeWidthHS_23_6mm;
+        }
+        else if ([labelSize isEqualToString:@"FL_21x45mm"]) {
+          printerLabelSize = BRLMPTPrintSettingsLabelSizeWidthFL_21x45mm;
+        }
+
+        [settings setLabelSize:printerLabelSize];
+      }
+
+      [settings setAutoCut:TRUE];
+      return settings;
       }
       break;
     case BRLMPrinterModelUnknown:
