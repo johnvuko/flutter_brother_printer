@@ -1,3 +1,9 @@
+## [0.1.5]
+
+* Add label for PT serie
+* **BREAKING**: prefix BrotherLabelSize with `QL` and `PT`
+* **BREAKING**: BrotherLabelSize width and height are now double
+
 ## [0.1.4]
 
 * Can create BrotherDevice with ipAddress
