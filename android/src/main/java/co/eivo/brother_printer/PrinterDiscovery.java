@@ -46,7 +46,11 @@ class PrinterDiscovery {
         _completionHandler = completion;
         _results.clear();
 
-        searchBLEPrinter(delay);
+        // TODO require permission for new version
+        if (android.os.Build.VERSION.SDK_INT <= 30) {
+            searchBLEPrinter(delay);
+        }
+
         searchWiFiPrinter(printerNames);
     }
 
