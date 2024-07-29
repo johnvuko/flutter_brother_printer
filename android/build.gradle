@@ -31,6 +31,8 @@ rootProject.allprojects {
 apply plugin: 'com.android.library'
 
 android {
+    namespace 'co.eivo.brother_printer'
+
     compileSdkVersion 30
 
     defaultConfig {

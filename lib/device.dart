@@ -86,10 +86,9 @@ class BrotherDevice extends Equatable {
     );
   }
 
-  BrotherDevice.fromNetwork(this.model, String ipAddress)
+  BrotherDevice.fromNetwork(this.model, this.ipAddress)
       : source = BrotherDeviceSource.network,
         modelName = model.nameAndroid,
-        ipAddress = ipAddress,
         location = null,
         printerName = null,
         serialNumber = null,

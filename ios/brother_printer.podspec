@@ -17,7 +17,7 @@ A new flutter plugin project.
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
   s.dependency 'BRLMPrinterKit'
-  s.platform = :ios, '10.0' # 10.0 require by BRLMPrinterKit
+  s.platform = :ios, '13.0' # 13.0 require by BRLMPrinterKit
 
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }

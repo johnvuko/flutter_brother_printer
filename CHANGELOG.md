@@ -1,3 +1,7 @@
+## [0.2.0]
+
+* Upgrade SDK to version 4.7.2
+
 ## [0.1.5]
 
 * Add label for PT serie
