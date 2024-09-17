@@ -1,3 +1,7 @@
+[![Pub Likes](https://img.shields.io/pub/likes/brother_printer)](https://pub.dev/packages/brother_printer)
+[![Pub Popularity](https://img.shields.io/pub/popularity/brother_printer)](https://pub.dev/packages/brother_printer)
+[![Pub Points](https://img.shields.io/pub/points/brother_printer)](https://pub.dev/packages/brother_printer)
+
 # brother_printer
 
 Brother printer SDK for Flutter using native SDK v4.
