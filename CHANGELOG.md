@@ -1,3 +1,7 @@
+## [0.2.5]
+
+* add new printer models
+
 ## [0.2.4]
 
 * fix Bluetooth permission for Android

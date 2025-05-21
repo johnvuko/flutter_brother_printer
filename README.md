@@ -15,7 +15,7 @@ Add this to your package's pubspec.yaml file:
 
 ```
 dependencies:
-  brother_printer: ^0.2.3
+  brother_printer: ^0.2.5
 ```
 
 ### iOS
