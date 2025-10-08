@@ -1,3 +1,7 @@
+## [0.2.6]
+
+* update Android SDK version to 4.13.0
+
 ## [0.2.5]
 
 * add new printer models
