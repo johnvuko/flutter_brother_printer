@@ -1,3 +1,7 @@
+## [0.2.7]
+
+* add Swift Package Manager support for iOS (CocoaPods still supported)
+
 ## [0.2.6]
 
 * update Android SDK version to 4.13.0

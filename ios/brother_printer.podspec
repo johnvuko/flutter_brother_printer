@@ -13,8 +13,8 @@ A new flutter plugin project.
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Your Company' => 'email@example.com' }
   s.source           = { :path => '.' }
-  s.source_files = 'Classes/**/*'
-  s.public_header_files = 'Classes/**/*.h'
+  s.source_files = 'brother_printer/Sources/brother_printer/**/*.{h,m}'
+  s.public_header_files = 'brother_printer/Sources/brother_printer/include/brother_printer/**/*.h'
   s.dependency 'Flutter'
   s.dependency 'BRLMPrinterKit'
   s.platform = :ios, '13.0' # 13.0 require by BRLMPrinterKit
